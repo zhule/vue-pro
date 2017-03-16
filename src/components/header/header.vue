@@ -47,7 +47,7 @@
 	            </div>
 	            <ul v-if="seller.supports" class="supports">
 	              <li class="support-item" v-for="item in seller.supports">
-	                <span class="icon" :class="iconClassMap[seller.supports]"></span>
+	                <span class="icon" :class="iconClassMap[item.type]"></span>
 	                <span class="text">{{item.description}}</span>
 	              </li>
 	            </ul>
@@ -68,15 +68,15 @@
 </template>
 
 <script>
+import star from 'components/star/star'
 export default {
-  // import star from 'components/star/star'
   props: {
   	seller: {
   	   type: Object
   	}
   },
   components: {
-  	// star
+  	star
   },
   data () {
   	return {
@@ -90,7 +90,7 @@ export default {
   	showDetails () {
   		this.detailShow = true;
   	},
-  	hideDetails () {
+  	hideDetail () {
   		this.detailShow = false;
   	}
   }
