@@ -12,6 +12,38 @@
   		</ul>
   	</div>
   	<!--goods end--> 
+  	<!-- foods-wrapper start-->
+  	<div class="foods-wrapper" id="wrapper" ref="foodsWrapper">
+		<ul>
+			<li v-for="item in goods" class="food-list food-list-hook">
+			    <h1>{{item.name}}</h1>
+				<ul>
+					<li v-for="food in item.foods" class="food-item" @click="goDetail(food);">
+						<div class="icon">
+							<img width="57" height="57" :src="food.icon" />
+						</div>
+						<div class="content">
+							<h2>{{food.name}}</h2>
+							<p class="description" v-show="food.description">{{food.description}}</p>
+							<div class="sell-info">
+								<span class="sellCount">月售: {{food.sellCount}}份</span>
+								<span class="rating">好评率{{food.rating}}%</span>
+							</div>
+							<div class="price">
+								<span class="newPrice"><span class="unit">￥</span>{{food.price}}</span>
+							    <span class="oldPrice" v-show="food.oldPrice">￥{{food.oldPrice}}</span>
+							</div>
+							<div class="cartcontrol-wrapper">
+								<cartcontrol :food="food"></cartcontrol>
+							</div>
+						</div>
+					</li>
+				</ul>
+	  	    </li>
+		</ul>
+  	</div>
+  	<!-- foods-wrapper end-->
+   <shopCart :deliveryPrice="seller.deliveryPrice" :minPrice = "seller.minPrice" :selectFoods="selectFoods"></shopCart>
   </div>
 </template>
 
@@ -19,6 +51,8 @@
 import axios from 'axios'
 import Vue from 'vue'
 import iconMap from 'components/iconMap/iconMap'
+import cartcontrol from 'components/cartcontrol/cartcontrol'
+import shopCart from 'components/shopCart/shopCart'
 
 export default {
 	props: {
@@ -26,12 +60,11 @@ export default {
 	},
 	created () {
 	    axios.get('static/data.json').then((res) => {
-	      this.goods = res.data.goods
-	      console.log(this.goods);
-	      this.$nextTick(() => {
-	        this._initScroll(); // 初始化scroll
-	        this._calculateHeight(); // 初始化列表高度列表
-	      })
+	      this.goods = res.data.goods;
+	      //this.$nextTick(() => {
+	        //this._initScroll(); // 初始化scroll
+	        //this._calculateHeight(); // 初始化列表高度列表
+	      //})
 	    });
 	},
 	data() {
@@ -63,12 +96,12 @@ export default {
 	   }
 	},
 	components: {
-    	iconMap
+    	iconMap,
+    	cartcontrol,
+    	shopCart
 	}
 
 }
-
-
 </script>
 
 <style lang="scss" rel="stylesheet/scss">
