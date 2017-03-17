@@ -1,29 +1,128 @@
 <template lang="html">
  <div class="shopCart">
+ 	<!-- content start -->
  	<div class="content">
- 		<div class="content-left" @click="">
+ 		<div class="content-left" @click="listToggle">
  			<div class="logo-wrapper">
- 				<div class="badge"></div>
- 				<div class="logo">
+ 				<div class="badge" v-show="totalCount">
+ 					{{totalCount}}
+ 				</div>
+ 				<div class="logo" :class="{'active': totalPrice}">
  				   <i class="icon-shopping_cart"></i>
  				</div>
  			</div>
- 			<div class="price" :class=""></div>
+ 			<div class="price" :class="{'active': totalPrice}">
+ 				￥{{totalPrice}}
+ 			</div>
  			<div class="desc">
- 				<!-- 另需要配送费￥{{}}元 -->
+ 				另需要配送费￥{{deliveryPrice}}元
  			</div>
  		</div>
- 		<div class="content-right"></div>
+ 		<div class="content-right" :class="{'enough': totalPrice >= minPrice }">
+ 			 {{payDesc}}
+ 		</div>
  	</div>
+ 	<!-- content end -->
+ 	<!-- ball-container start -->
+	<div class="ball-container">
+	  <transition name="drop" v-on:before-enter="beforeEnter"
+        v-on:enter="enter" v-on:after-enter="afterEnter"
+        v-for="(ball,index) in balls">
+        <div class="ball" v-show="ball.show">
+          <div class="inner inner-hook"></div>
+        </div>
+      </transition>
+	</div>
+	<!-- ball-container end -->
+	<transition name="transHeight">
+	  <div class="shopcart-list" v-show="listShow">
+        <div class="list-header">
+          <h1 class="title">购物车</h1>
+          <span class="empty" @click="setEmpty()">清空</span>
+        </div>
+        <div class="list-content" ref="foodlist">
+          <ul>
+            <li class="food" v-for="food in selectFoods">
+              <span class="name">{{food.name}}</span>
+              <div class="price">
+                <span>￥{{food.price * food.count}}</span>
+              </div>
+              <div class="cartcontrol-wrapper">
+                <cartcontrol :food="food"></cartcontrol>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+	</transition>
+
  </div>
 </template>
 
 <script>
 export default {
   props: {
-  	deliveryPrice: {
-  	  type: Number,
-  	  default: 0
+    selectFoods: {
+      type: Array,
+      default: []
+    },
+    deliveryPrice: {
+      type: Number,
+      default: 0
+    },
+    minPrice: {
+      type: Number,
+      default: 0
+    }
+  },
+  computed: {
+    totalPrice() {
+      let total = 0
+      this.selectFoods.forEach((food) => {
+        if (food.count) {
+          total += food.price * food.count
+        }
+      })
+      return total
+    },
+  	totalCount () {
+      let count = 0
+      this.selectFoods.forEach((food) => {
+        count += food.count
+      })
+      return count
+  	},
+  	payDesc() {
+      let diff = this.minPrice - this.totalPrice
+      if (!this.totalPrice) {
+        return `￥${this.totalPrice}起送`
+      } else if (diff > 0) {
+        return `还差￥${diff}元`
+      } else {
+        return '去结算'
+      }
+    }
+  },
+  methods: {
+  	listToggle () {
+  	  if (!this.selectFoods.length) {
+        return
+      }
+      this.listShow = !this.listShow
+      if (this.listShow) {
+        this.$nextTick(() => {
+          if (!this.foodlistScroll) {
+            this._initScroll()
+          } else {
+            this.foodlistScroll.refresh()
+          }
+        })
+      }
+  	},
+  	setEmpty () {
+  	  this.selectFoods.forEach((food) => {
+  	  	food.count = 0;
+  	  })
   	}
   }
 }	
