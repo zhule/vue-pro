@@ -75,6 +75,23 @@ export default {
       default: 0
     }
   },
+  data () {
+  	return {
+      balls: [{
+        show: false
+      }, {
+        show: false
+      }, {
+        show: false
+      }, {
+        show: false
+      }, {
+        show: false
+      }],
+      dropBalls: [],
+      listShow: false
+    }
+  },
   computed: {
     totalPrice() {
       let total = 0
