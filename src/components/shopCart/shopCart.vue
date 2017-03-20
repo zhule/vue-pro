@@ -31,7 +31,7 @@
         <div class="ball" v-show="ball.show">
           <div class="inner inner-hook"></div>
         </div>
-      </transition>
+    </transition>
 	</div>
 	<!-- ball-container end -->
 	<transition name="transHeight">
@@ -60,6 +60,10 @@
 </template>
 
 <script>
+import cartcontrol from 'components/cartcontrol/cartcontrol'
+import backdrop from 'components/backdrop/backdrop'
+import BScroll from 'better-scroll'
+
 export default {
   props: {
     selectFoods: {
@@ -92,7 +96,18 @@ export default {
       listShow: false
     }
   },
+  created() {
+    this.$root.eventHub.$on('cart.add', this.drop)
+    console.log(this.$root.eventHub);
+  },
   computed: {
+    showBackdrop() {
+      if (this.listShow && this.totalPrice) {
+        return true
+      }
+      this.listShow = false
+      return false
+    },
     totalPrice() {
       let total = 0
       this.selectFoods.forEach((food) => {
@@ -116,12 +131,28 @@ export default {
       } else if (diff > 0) {
         return `还差￥${diff}元`
       } else {
-        return '去结算'
+        return '去结算' 
       }
     }
   },
   methods: {
-  	listToggle () {
+    drop(el) {
+      for (let i = 0, l = this.balls.length; i < l; i++) {
+        let ball = this.balls[i]
+        if (!ball.show) {
+          ball.show = true
+          ball.el = el
+          this.dropBalls.push(ball)
+          return
+        }
+      }
+    },
+    _initScroll() {
+      this.foodlistScroll = new BScroll(this.$refs.foodlist, {
+        click: true
+      });
+    },
+    listToggle () {
   	  if (!this.selectFoods.length) {
         return
       }
@@ -140,7 +171,48 @@ export default {
   	  this.selectFoods.forEach((food) => {
   	  	food.count = 0;
   	  })
-  	}
+  	},
+    hideBackdrop() {
+      this.listShow = false
+    },
+    beforeEnter(el) {
+      let count = this.balls.length
+      while (count--) {
+        let ball = this.balls[count]
+        if (ball.show) {
+          let rect = ball.el.getBoundingClientRect()
+          let x = rect.left - 32;
+          let y = -(window.innerHeight - rect.top - 22)
+          el.style.display = ''
+          el.style.webkitTransform = `translate3d(0,${y}px,0)`
+          el.style.transform = `translate3d(0,${y}px,0)`
+          let inner = el.querySelector('.inner-hook')
+          inner.style.webkitTransform = `translate3d(${x}px,0,0)`
+          inner.style.transform = `translate3d(${x}px,0,0)`
+        }
+      }
+    },
+    enter(el) {
+      el.offsetHeight
+      this.$nextTick(() => {
+        el.style.webkitTransform = 'translate3d(0,0,0)'
+        el.style.transform = 'translate3d(0,0,0)'
+        let inner = el.querySelector('.inner-hook')
+        inner.style.webkitTransform = 'translate3d(0,0,0)'
+        inner.style.transform = 'translate3d(0,0,0)'
+      })
+    },
+    afterEnter(el) {
+      let ball = this.dropBalls.shift()
+      if (ball) {
+        ball.show = false
+        el.style.display = 'none'
+      }
+    }
+  },
+  components: {
+    cartcontrol,
+    backdrop
   }
 }	
 

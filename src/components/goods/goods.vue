@@ -3,7 +3,7 @@
   <div class="goods">
   	<div class="menu-wrapper" ref="menuWrapper">
   		<ul>
-  			<li v-for="(item, index) in goods" @click="menuClick(index, $event)" :class="index = menuCurrentIndex ? 'menu-item-selected' : 'menu-item'">
+  			<li v-for="(item, index) in goods" @click="menuClick(index, $event)" :class="index==menuCurrentIndex ? 'menu-item-selected' : 'menu-item'">
   				<span class="text">
   					<iconMap v-show="item.type > 0" :iconType="item.type"></iconMap>
   					{{item.name}}
@@ -18,7 +18,8 @@
 			<li v-for="item in goods" class="food-list food-list-hook">
 			    <h1>{{item.name}}</h1>
 				<ul>
-					<li v-for="food in item.foods" class="food-item" @click="goDetail(food);">
+					<!-- <li v-for="food in item.foods" class="food-item" @click="goDetail(food);"> -->
+          <li v-for="food in item.foods" class="food-item">
 						<div class="icon">
 							<img width="57" height="57" :src="food.icon" />
 						</div>
@@ -34,12 +35,12 @@
 							    <span class="oldPrice" v-show="food.oldPrice">￥{{food.oldPrice}}</span>
 							</div>
 							<div class="cartcontrol-wrapper">
-								<cartcontrol :food="food"></cartcontrol>
-							</div>
+								 <cartcontrol :food="food"></cartcontrol>
+               </div>
 						</div>
 					</li>
 				</ul>
-	  	    </li>
+	  	</li>
 		</ul>
   	</div>
   	<!-- foods-wrapper end-->
@@ -48,11 +49,14 @@
 </template>
 
 <script>
-import axios from 'axios'
 import Vue from 'vue'
+import axios from 'axios'
+import BScroll from 'better-scroll'
 import iconMap from 'components/iconMap/iconMap'
 import cartcontrol from 'components/cartcontrol/cartcontrol'
 import shopCart from 'components/shopCart/shopCart'
+const ERR_OK = 0
+const eventHub = new Vue()
 
 export default {
 	props: {
@@ -60,50 +64,74 @@ export default {
 	},
 	created () {
 	    axios.get('static/data.json').then((res) => {
-	      this.goods = res.data.goods;
-	      //this.$nextTick(() => {
-	        //this._initScroll(); // 初始化scroll
-	        //this._calculateHeight(); // 初始化列表高度列表
-	      //})
+        this.goods = res.data.goods;
+        console.log(this.goods);
+	      this.$nextTick(() => {
+	        this._initScroll(); // 初始化scroll
+	        this._calculateHeight(); // 初始化列表高度列表
+	      })
 	    });
-	},
+  },
 	data() {
 	   return {
 	      goods: [],
 	      listHeight: [],
-	      foodsScrollY: 0,
+        foodsScrollY: 0,
 	      selectedFood: ''
 	   }
-    },
-    computed: {
-       menuCurrentIndex() {
-	      for (let i = 0, l = this.listHeight.length; i < l; i++) {
-	        let topHeight = this.listHeight[i]
-	        let bottomHeight = this.listHeight[i + 1]
-	        if (!bottomHeight || (this.foodsScrollY >= topHeight && this.foodsScrollY < bottomHeight)) {
-	          return i
-	        }
-	      }
-	      return 0
-	   },
-	    selectFoods() {
-	      let foods = []
-	      this.goods.forEach((good) => {
-	        good.foods.forEach((food) => {
-	          if (food.count) {
-	            foods.push(food)
-	          }
-	        })
-	      })
-	      return foods
-	    }
-    },
+  },
+  computed: {
+     menuCurrentIndex() {
+      for (let i = 0, l = this.listHeight.length; i < l; i++) {
+        let topHeight = this.listHeight[i]
+        let bottomHeight = this.listHeight[i + 1]
+
+        if (!bottomHeight || (this.foodsScrollY >= topHeight && this.foodsScrollY < bottomHeight)) {
+          return i
+        }
+      }
+      return 0
+   },
+    selectFoods() {
+      let foods = []
+      this.goods.forEach((good) => {
+        good.foods.forEach((food) => {
+          if (food.count) {
+            foods.push(food)
+          }
+        })
+      })
+      return foods
+    }
+  },
 	methods: {
+     _initScroll () {
+       this.menuWrapper = new BScroll(this.$refs.menuWrapper, {click: true});
+       this.foodsScroll = new BScroll(this.$refs.foodsWrapper, {
+          click: true,
+          probeType: 3
+       });
+       // 监控滚动事件
+       this.foodsScroll.on('scroll', (pos) => {
+          this.foodsScrollY = Math.abs(Math.round(pos.y));
+       }); 
+     },
+     _calculateHeight () {
+        let foodList = this.$refs.foodsWrapper.querySelectorAll('.food-list-hook')
+       
+        let height = 0;
+        this.listHeight.push(height);
+        for ( let i = 0, l = foodList.length; i < l; i++ ) {
+          let item = foodList[i];
+          height += item.clientHeight
+          this.listHeight.push(height) 
+        }
+     },
 	   menuClick(index, event) {
-	      if (!event._constructed) {
+	     if (!event._constructed) {
 	        return
-	      }
-	      this.foodsScroll.scrollTo(0, -this.listHeight[index], 300)
+	     }
+       this.foodsScroll.scrollTo(0, -this.listHeight[index], 300)
 	   }
 	},
 	components: {
@@ -239,9 +267,9 @@ export default {
             right: 0;
             bottom: 12px;
             z-index: 20;
-		  }
-		}
-	  }
+		      }
+        }
+	    }
    }         
 }
 </style>
