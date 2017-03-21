@@ -25,13 +25,13 @@
  	<!-- content end -->
  	<!-- ball-container start -->
 	<div class="ball-container">
-	  <transition name="drop" v-on:before-enter="beforeEnter"
+          <transition name="drop" v-on:before-enter="beforeEnter"
         v-on:enter="enter" v-on:after-enter="afterEnter"
-        v-for="(ball,index) in balls">
+        v-for="(ball,index) in balls" :key="ball.id">
         <div class="ball" v-show="ball.show">
-          <div class="inner inner-hook"></div>
+          <div class="inner inner-hook">{{ball.id}}</div>
         </div>
-    </transition>
+      </transition>
 	</div>
 	<!-- ball-container end -->
 	<transition name="transHeight">
@@ -79,8 +79,8 @@ export default {
       default: 0
     }
   },
-  data () {
-  	return {
+  data() {
+    return {
       balls: [{
         show: false
       }, {
@@ -98,7 +98,6 @@ export default {
   },
   created() {
     this.$root.eventHub.$on('cart.add', this.drop)
-    console.log(this.$root.eventHub);
   },
   computed: {
     showBackdrop() {
@@ -117,21 +116,21 @@ export default {
       })
       return total
     },
-  	totalCount () {
+    totalCount() {
       let count = 0
       this.selectFoods.forEach((food) => {
         count += food.count
       })
       return count
-  	},
-  	payDesc() {
+    },
+    payDesc() {
       let diff = this.minPrice - this.totalPrice
       if (!this.totalPrice) {
         return `￥${this.totalPrice}起送`
       } else if (diff > 0) {
         return `还差￥${diff}元`
       } else {
-        return '去结算' 
+        return '去结算'
       }
     }
   },
@@ -147,13 +146,21 @@ export default {
         }
       }
     },
+    setEmpty() {
+      this.selectFoods.forEach((food) => {
+        food.count = 0
+      })
+    },
+    hideBackdrop() {
+      this.listShow = false
+    },
     _initScroll() {
       this.foodlistScroll = new BScroll(this.$refs.foodlist, {
         click: true
       });
     },
-    listToggle () {
-  	  if (!this.selectFoods.length) {
+    listToggle() {
+      if (!this.selectFoods.length) {
         return
       }
       this.listShow = !this.listShow
@@ -166,14 +173,6 @@ export default {
           }
         })
       }
-  	},
-  	setEmpty () {
-  	  this.selectFoods.forEach((food) => {
-  	  	food.count = 0;
-  	  })
-  	},
-    hideBackdrop() {
-      this.listShow = false
     },
     beforeEnter(el) {
       let count = this.balls.length
@@ -214,8 +213,7 @@ export default {
     cartcontrol,
     backdrop
   }
-}	
-
+}
 </script>
 
 <style lang="scss" rel="stylesheet/scss">

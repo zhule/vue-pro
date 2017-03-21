@@ -28,6 +28,9 @@ const router = new VueRouter({
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
+  data: {
+    eventHub: new Vue()
+  },
   router,
   template: '<App/>',
   components: { App }

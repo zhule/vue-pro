@@ -18,8 +18,7 @@
 			<li v-for="item in goods" class="food-list food-list-hook">
 			    <h1>{{item.name}}</h1>
 				<ul>
-					<!-- <li v-for="food in item.foods" class="food-item" @click="goDetail(food);"> -->
-          <li v-for="food in item.foods" class="food-item">
+					<li v-for="food in item.foods" class="food-item" @click="goDetail(food);">
 						<div class="icon">
 							<img width="57" height="57" :src="food.icon" />
 						</div>
@@ -45,32 +44,34 @@
   	</div>
   	<!-- foods-wrapper end-->
    <shopCart :deliveryPrice="seller.deliveryPrice" :minPrice = "seller.minPrice" :selectFoods="selectFoods"></shopCart>
+   <foodDetail :food="selectedFood" v-if="selectedFood" ref="myFood"></foodDetail>
   </div>
 </template>
 
 <script>
-import Vue from 'vue'
-import axios from 'axios'
+
 import BScroll from 'better-scroll'
 import iconMap from 'components/iconMap/iconMap'
 import cartcontrol from 'components/cartcontrol/cartcontrol'
 import shopCart from 'components/shopCart/shopCart'
+import foodDetail from 'components/foodDetail/foodDetail'
+import Vue from 'vue'
+import axios from 'axios'
 const ERR_OK = 0
 const eventHub = new Vue()
-
+    
 export default {
 	props: {
 		seller: Object
 	},
 	created () {
-	    axios.get('static/data.json').then((res) => {
-        this.goods = res.data.goods;
-        console.log(this.goods);
-	      this.$nextTick(() => {
-	        this._initScroll(); // 初始化scroll
-	        this._calculateHeight(); // 初始化列表高度列表
-	      })
-	    });
+    axios.get('static/data.json').then((res) => {
+      this.goods = res.data.goods;
+      this.$nextTick(() => {
+        this._initScroll(); // 初始化scroll
+        this._calculateHeight(); // 初始化列表高度列表
+      })
+    });
   },
 	data() {
 	   return {
@@ -132,12 +133,19 @@ export default {
 	        return
 	     }
        this.foodsScroll.scrollTo(0, -this.listHeight[index], 300)
-	   }
+	   },
+     goDetail(food) {
+        this.selectedFood = food
+        this.$nextTick(() => {
+          this.$refs.myFood.showToggle()
+        })
+     }
 	},
 	components: {
     	iconMap,
     	cartcontrol,
-    	shopCart
+    	shopCart,
+      foodDetail
 	}
 
 }
