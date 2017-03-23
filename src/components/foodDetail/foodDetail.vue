@@ -104,72 +104,74 @@ export default {
     box-sizing: border-box;
     width: 100%;
     padding: 18px;
-  }
-  .title {
-      font-size:14px;
-      font-weight: 700;
-      color: rgb(7,17,27);
-      line-height: 14px;
-  }
-  .desc {
-      display: flex;
-      padding: 0;
-      padding-top: 8px;
-      font-size: 10px;
-      color: rgb(147,153,159);
-      line-height: 10px;
-      span:last-child {
-        padding-left: 12px;
+	.title {
+	      font-size:14px;
+	      font-weight: 700;
+	      color: rgb(7,17,27);
+	      line-height: 14px;
+	}
+	.desc {
+	      display: flex;
+	      padding: 0;
+	      padding-top: 8px;
+	      font-size: 10px;
+	      color: rgb(147,153,159);
+	      line-height: 10px;
+	      span:last-child {
+	        padding-left: 12px;
+		  }
+	}
+	.price {
+	  display: flex;
+	  padding-top: 18px;
+	  font-size: 14px;
+	  font-weight: 700;
+	  color: rgb(240,20,20);
+	  line-height: 24px;
+	  .unit {
+	    font-size: 10px;
+	    font-weight: normal;
 	  }
-  	}
-    .price {
-      display: flex;
-      padding-top: 18px;
-      font-size: 14px;
-      font-weight: 700;
-      color: rgb(240,20,20);
-      line-height: 24px;
-      .unit {
-        font-size: 10px;
-        font-weight: normal;
-      }
-      .oldPrice {
-        padding-left: 12px;
-        font-size: 10px;
-        font-weight: normal;
-        color: rgb(147,153,159);
-        line-height: 24px;
+	  .oldPrice {
+	    padding-left: 12px;
+	    font-size: 10px;
+	    font-weight: normal;
+	    color: rgb(147,153,159);
+	    line-height: 24px;
 	  }
-    }
-    .shopCart {
-      position: absolute;
-      right: 18px;
-      bottom: 18px;
-      height: 24px;
-      text-align: center;
-      z-index: 2;
-      .text {
-        box-sizing: border-box;
-        height: 100%;
-        line-height: 24px;
-        color: white;
-        font-size: 10px;
-        padding: 0 12px;
-        border-radius: 12px;
-        background: rgb(0,160,220);
-        &.fade-enter-active, &.fade-leave-active{
-          transition: opacity .2s;
-        }
-        &.fade-enter, &.fade-leave-active{
-          opacity: 0;
-        }
-      }
-    }
-    .cartcontrol {
+	}
+	.shopCart {
+	      position: absolute;
+	      right: 18px;
+	      bottom: 18px;
+	      height: 24px;
+	      text-align: center;
+	      z-index: 2;
+	      .text {
+	        box-sizing: border-box;
+	        height: 100%;
+	        line-height: 24px;
+	        color: white;
+	        font-size: 10px;
+	        padding: 0 12px;
+	        border-radius: 12px;
+	        background: rgb(0,160,220);
+	        &.fade-enter-active, &.fade-leave-active{
+	          transition: opacity .2s;
+	        }
+	        &.fade-enter, &.fade-leave-active{
+	          opacity: 0;
+	        }
+	      }
+	}
+	.cartcontrol {
       position: absolute;
       right: 12px;
       bottom: 12px;
 	}
+  }
+
+  
 }
 
 </style>
