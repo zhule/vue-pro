@@ -25,7 +25,7 @@
  	<!-- content end -->
  	<!-- ball-container start -->
 	<div class="ball-container">
-          <transition name="drop" v-on:before-enter="beforeEnter"
+       <transition name="drop" v-on:before-enter="beforeEnter"
         v-on:enter="enter" v-on:after-enter="afterEnter"
         v-for="(ball,index) in balls" :key="ball.id">
         <div class="ball" v-show="ball.show">
@@ -216,7 +216,7 @@ export default {
 }
 </script>
 
-<style lang="scss" rel="stylesheet/scss">
+<style lang="scss" rel="stylesheet/scss" scoped>
 .shopCart {
   position: fixed;
   left: 0;

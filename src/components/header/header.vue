@@ -80,7 +80,7 @@ export default {
   },
   data () {
   	return {
-  		detailShow: false
+  	  detailShow: false
   	}
   },
   created() {
@@ -97,7 +97,7 @@ export default {
 }
 </script>
 
-<style lang="scss" rel="stylesheet/scss">
+<style lang="scss" rel="stylesheet/scss" scoped>
 @import '../../common/scss/mixin';
 .header {
   position: relative;
