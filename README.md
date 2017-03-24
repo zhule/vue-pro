@@ -1,11 +1,12 @@
 # vue-pro
-# vue-pro
 
 > A Vue.js project
 
-项目目的: 通过这个项目达到可以熟练掌握Vue技巧
+> 项目起因: 看Git上有好多好的Vue开源项目, 然后自己在Git找到一个比较全的项目的，看它源码看了一个星期, 然后开始自己动手尝试自己去通过自己学到的Vue只是去搭建一个全的项目，希望在项目中能熟练掌握Vue这个框架技巧。
 
-项目技术: Vue2 Vue-cli Axios Vuex等 
+>项目目的: 通过这个项目达到可以熟练掌握Vue技巧
+
+> 项目技术: Vue2 Vue-cli Axios Vuex等 
 
 安装步骤:
 
@@ -23,5 +24,5 @@ npm run build
 npm run build --report
 ```
 
-For detailed explanation on how things work, checkout the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+
 
