@@ -89,6 +89,25 @@ export default {
 	     evelflag: true
 	  }
 	},
+	computed: {
+		evelArr() {
+			let selectIndex = 0
+			this.classifyArr.forEach((data, index) => {
+				if(data.active) {
+					selectIndex = index
+					console.log(selectIndex);
+				}
+			})
+			if(this.detailWrapper) {
+				this.$nextTick(() => {
+					this.detailWrapper.refresh();
+				})
+			}
+
+			return selectIndex ? (this.food.ratings.filter((data) => this.evelflag ? data.rateType ===selectIndex - 1 && data.text : data.rateType === selectIndex - 1)) : (this.food.ratings.filter((data) => this.evelflag ? data.text : true))
+
+		}
+	},
 	methods: {
 		showToggle () {
 		   this.showDetail = !this.showDetail
@@ -114,6 +133,12 @@ export default {
 	      this.$set(this.food, 'count', 1)
 	      this.$root.eventHub.$emit('cart.add', event.target)
 	    },
+	    filterEvel(item) {
+	      this.classifyArr.forEach((data) => {
+	        data.active = false
+	      })
+	      item.active = true
+	    }
 	
 	},
 	components: {
